@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>전광판</title>
+  <style>
+    body {
+      background-color: black;
+      color: lime;
+      font-size: 8rem;
+      text-align: center;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      padding: 5vh 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100vh;
+    }
+    .line {
+      margin: 1rem 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="display">불러오는 중...</div>
+
+  <script>
+    // TSV로 게시된 시트 URL
+    const url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0kxj8C4gx2HHMe_NPnlYu9K2gRFKtmGOvKvQGHnAUawktXGjnvMUgMoCdZX4U4hmMkWToX7MeZ0c0/pub?output=tsv";
+
+    fetch(url)
+      .then(res => res.text())
+      .then(tsv => {
+        const lines = tsv.trim().split('\n');
+        const displayLines = lines.slice(1, 6); // A2 ~ A6 줄만
+
+        let html = '';
+        for (const line of displayLines) {
+          const cell = line.split('\t')[0]; // A열만
+          html += `<div class="line">${cell}</div>`;
+        }
+
+        document.getElementById('display').innerHTML = html || '데이터 없음';
+      })
+      .catch(err => {
+        console.error("시트 불러오기 오류:", err);
+        document.getElementById('display').textContent = '오류 발생';
+      });
+  </script>
+</body>
+</html>
